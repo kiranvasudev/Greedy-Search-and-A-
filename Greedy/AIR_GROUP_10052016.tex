@@ -1,0 +1,56 @@
+\documentclass[11pt]{article}
+%Gummi|065|=)
+\usepackage{graphicx}
+\usepackage{hyperref}
+\title{\textbf{Artificial Intelligence for Robotics\\ - Homework 6 -}}
+\author{Kiran Vasudev, Patrick Nagel}
+\date{Due date: 16.05.2016}
+\begin{document}
+
+\maketitle
+
+\newpage
+\tableofcontents
+
+
+\newpage
+\section{Search Strategies}
+\subsection{Uniform Cost Search}
+The uniform cost search is an \textbf{optimal} algorithm with any step-cost function. It stores and orders its nodes in a queue related to their path-costs. The node with the lowest path cost will be expanded. The algorithm then tests the node, which is selected, if it is the goal. Not to apply the goal test before the node with the lowest path-cost is selected avoids to choose a suboptimal solution. It makes sure that all nodes are generated and considered first. The uniform cost search also provides a test for the case that a better path to the goal is found. The  search focuses on the total costs of the nodes, which leads to the \textbf{possibility of infinite loops} if zero cost paths are given.\\
+\\
+The complexity of this algorithm does not depend on the depth of the search. Instead it is characterized by the path costs. In the worst case of the complexity is \textbf{$O(b^{1 + \frac{C*}{\epsilon}})$ (worst case)}. The C* represents the costs of an optimal solution and $\varepsilon$ the costs which are guaranteed at every node (can be also higher than that). In the case (that all costs are equal the complexity is \textbf{$O(b^{d + 1})$ (best case)}. The algorithm is then quite similar to breadth-first search just with the exception that the uniform cost search does not stop after finding the goal, but after checking all nodes (in case a lower cost solution exists). In this case the algorithm expands nodes unnecessarily since all costs are the same and the optimal path was alread found.
+
+
+\subsection{Depth-First Search}
+% Kiran
+
+\subsection{Limited Depth-First Search}
+% Patrick
+
+\subsection{Iterative-deepening Search}
+% Kiran
+
+\subsection{Informed Search}
+% Patrick
+
+\subsection{Greedy Search}
+% Kiran
+
+\subsection{A*}
+% Patrick
+
+\subsection{Iterative A*}
+% Kiran
+
+\newpage
+\section{What is a heuristic function?}
+% Not decided yet.
+
+\newpage
+\section{Comparison of the two heuristics. (Task 3 (b))}
+% Not decided yet.
+
+\newpage
+\section{Comment if the heuristics are consistent or inconsistent. (Task 3 (c))}
+% Not decided yet.
+\end{document}

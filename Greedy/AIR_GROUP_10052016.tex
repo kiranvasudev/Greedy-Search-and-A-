@@ -1,5 +1,6 @@
 \documentclass[11pt]{article}
-%Gummi|065|=)
+
+\usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{hyperref}
 \title{\textbf{Artificial Intelligence for Robotics\\ - Homework 6 -}}
@@ -22,13 +23,36 @@ The complexity of this algorithm does not depend on the depth of the search. Ins
 
 
 \subsection{Depth-First Search}
-% Kiran
+
+The Depth First Search Algorithm is an algorithm that is similar to Breadth First Search. In Breadth-First Search, the algorithm uses a queue which follows the principle of First In First Out (\textbf{FIFO}). In Depth First Search, we use the data structure of a stack that follows the principle of Last In First Out(\textbf{LIFO}). 
+
+The algorithm starts at the root node and then traverses to the child at the left and goes right down to the deepest node in the state space or until goal state is found. If the goal is found, the goal is returned, otherwise the algorithm backtracks and visits the unvisited nodes. 
+
+Depth First Search is optimal when we use a state space or a graph and its size is finite. If the size is infinite, then the algorithm is not optimal as it may end in infinite loops or it may return a path that is not the optimal solution.
+
+The biggest advantage of Depth First Search is the space complexity.
+The Algorithm works in two ways. First, the visited elements are pushed onto the stack and once the maximum depth of that node is reached, the elements are popped. This method is called \textbf{backtracking}.
+
+\textbf{Complexities:}
+\begin{itemize}
+\item Space Complexity: \[O(bm)\]
+\item Time Complexity: \[ O(b^m)\]
+\end{itemize}
+
+where b is the branching factor and m is the max depth of the state space.
 
 \subsection{Limited Depth-First Search}
 % Patrick
 
 \subsection{Iterative-deepening Search}
-% Kiran
+The Algorithm \textbf{Iterative Deepening Search} is used when the search space is very large and the depth is unknown. IDDFS is a combination of both BFS and DFS. This algorithm uses a counter that is used to iterate through every level of the state space. This counter helps remove traversing the maximum depth of the state space like DFS and uses BFS to traverse every level. If the goal state is not found in a particular level, then the counter is incremented and the algorithm follows. In every iteration, the algorithm traverses the entire state space starting from the root node. These states are generated multiple times but this generation isn't too costly. 
+
+\textbf{Complexities:}
+\begin{itemize}
+\item Space Complexity: \[O(bd)\]
+\item Time Complexity: \[ O(b^d)\]
+\end{itemize}
+where b is the branching factor and d is the depth of least cost solution.
 
 \subsection{Informed Search}
 % Patrick
@@ -44,7 +68,7 @@ The complexity of this algorithm does not depend on the depth of the search. Ins
 
 \newpage
 \section{What is a heuristic function?}
-% Not decided yet.
+A heuristic function is one that estimates the cost of the path from a node to the closest goal state. If the node is the goal state, the cost is 0. The heuristic function is denoted by \textbf{h(n)}.
 
 \newpage
 \section{Comparison of the two heuristics. (Task 3 (b))}

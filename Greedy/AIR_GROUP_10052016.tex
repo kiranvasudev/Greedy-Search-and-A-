@@ -25,13 +25,17 @@ The complexity of this algorithm does not depend on the depth of the search. Ins
 % Kiran
 
 \subsection{Limited Depth-First Search}
-% Patrick
+The limited depth-first search is an extension of the depht-first search. It adds a depth limit to \textbf{avoid failure in infinite state spaces}. In the limit depth the children nodes are not longer generated, because it is the end of the search. \\
+\\
+The limited depth-first search contains a few scenarios, which can lead to different results and characteristics: Setting up a limit can result in not finding the goal at all. This case occurs if the goal node is beyond the limit. If the limit is selected higher than the actually depth, the search is also nonoptimal. In cases of having more information of the states, the limit can be chosen more efficient. Such a limit is called diameter.\\
+\\
+In general is the time complexity of the algorithm  $O(b^{l})$ and the space complexity $O(b \cdot l)$ (l = limit). In case that the limit is infite, there is no difference to the depth-first search any longer.  
 
 \subsection{Iterative-deepening Search}
 % Kiran
 
 \subsection{Informed Search}
-% Patrick
+The expression informed search is the generic term for search algorithms which use problem-specific knowledge to find solutions more efficient. This types of searches are also called heurisitic searches. Informed searches use their knowledge to build an evaluation function. The function evaluates if it is worth to expand the node to find the goal.
 
 \subsection{Greedy Search}
 % Kiran

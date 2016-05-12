@@ -49,7 +49,11 @@ void Agent::greedy_search(string heuristic) {
 	//TODO
 	//Note: In this assignment you must find the proper way to
 	//keep track of repeated states.
-
+	if (heuristic == "Misplaced tiles") {
+		misplaced_tiles(puzzle);
+	} else {
+		manhattan_distance(puzzle);
+	}
 }
 
 void Agent::print_puzzle(Puzzle& puzzle) {

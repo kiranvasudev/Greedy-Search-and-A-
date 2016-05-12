@@ -13,7 +13,6 @@
 \newpage
 \tableofcontents
 
-
 \newpage
 \section{Search Strategies}
 \subsection{Uniform Cost Search}
@@ -42,7 +41,11 @@ The Algorithm works in two ways. First, the visited elements are pushed onto the
 where b is the branching factor and m is the max depth of the state space.
 
 \subsection{Limited Depth-First Search}
-% Patrick
+The limited depth-first search is an extension of the depht-first search. It adds a depth limit to \textbf{avoid failure in infinite state spaces}. In the limit depth the children nodes are not longer generated, because it is the end of the search. \\
+\\
+The limited depth-first search contains a few scenarios, which can lead to different results and characteristics: Setting up a limit can result in not finding the goal at all. This case occurs if the goal node is beyond the limit. If the limit is selected higher than the actually depth, the search is also nonoptimal. In cases of having more information of the states, the limit can be chosen more efficient. Such a limit is called diameter.\\
+\\
+In general is the time complexity of the algorithm  $O(b^{l})$ and the space complexity $O(b \cdot l)$ (l = limit). In case that the limit is infite, there is no difference to the depth-first search any longer.  
 
 \subsection{Iterative-deepening Search}
 The Algorithm \textbf{Iterative Deepening Search} is used when the search space is very large and the depth is unknown. IDDFS is a combination of both BFS and DFS. This algorithm uses a counter that is used to iterate through every level of the state space. This counter helps remove traversing the maximum depth of the state space like DFS and uses BFS to traverse every level. If the goal state is not found in a particular level, then the counter is incremented and the algorithm follows. In every iteration, the algorithm traverses the entire state space starting from the root node. These states are generated multiple times but this generation isn't too costly. 
@@ -55,13 +58,17 @@ The Algorithm \textbf{Iterative Deepening Search} is used when the search space 
 where b is the branching factor and d is the depth of least cost solution.
 
 \subsection{Informed Search}
-% Patrick
+The expression informed search is the generic term for search algorithms which use problem-specific knowledge to find solutions more efficient. This types of searches are also called heurisitic searches. \\
+\\
+Informed searches use their knowledge to build an evaluation function. The function evaluates if it is worth to expand the node based on the costs, which have to be paid to reach the node and at the end the goal. The approach of choosing the most suitable way first is called best-first search. The evaluation function of lots of algorithms, which fit into the definition of a best-first search, contain a part which is called heuristic function. This function itself gives the estimated cost of the cheapest path from a node n to the goal node.
 
 \subsection{Greedy Search}
 % Kiran
 
 \subsection{A*}
-% Patrick
+The A* search is the most famous search using the best-first approach. It was found 1968 by Peter Hart, Nils J. Nilsson and Bertram Raphael and contains as many other \textbf{best-first} search a heuristic function ($h(n)$). Together with a function, which gives the costs to reach a node ($g(n)$), it builds the evaluation function of the A* search: $f(n) = g(n) + h(n)$. In words the evaluation function $f(n)$ means the estimated cost of the chepeast solution through n.\\
+\\
+The algorithm finds always the best solution if such a  solution is given at all. Thus it is \textbf{optimal}. Furthermore the search is \textbf{complete} unless there are infinity nodes with $f(n) <= f(G)$. The complexity of the search is in the best case $O(d)$ and in worst case it is $O$ of the entire state space. The A* search can be compared to the uniformed-cost-search but instead of having only the g-function, it is g + h.
 
 \subsection{Iterative A*}
 % Kiran

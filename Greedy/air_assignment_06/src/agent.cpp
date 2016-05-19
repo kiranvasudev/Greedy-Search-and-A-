@@ -42,10 +42,17 @@ int Agent::misplaced_tiles(Puzzle puzzle) {
 
 int Agent::manhattan_distance(Puzzle puzzle) {
 
+	// The following variable (previousIndexOfZero) is needed to avoid backward steps.
 	int previousIndexOfZero = 0;
+
+	// The index of the zero tile is of great significance. It indicates the possible moves.
 	int indexOfZero;
+
+
+	//The following variable will be used to save the values of the 8-puzzle in an array. ...
 	int tilesInPuzzle[9];
 
+	//... In the follwing for loop the puzzle will be translated, going from left to right, row by row.
 	int index = 0;
 	for (int row = 0; row < 3; row++) {
 		for (int column = 0; column < 3; column++) {
@@ -53,52 +60,74 @@ int Agent::manhattan_distance(Puzzle puzzle) {
 		}
 	}
 
-	// variable for sum of distances
+	// Variable for the sum of distances. The distance is called Manhattan distance.
 	int sumOfDistances = getSumOfDistances(tilesInPuzzle);
 
-	// variables to save the difference between current and possible new state
-	int diffRight;
-	int diffLeft;
-	int diffUp;
-	int diffDown;
+	/* Variables for the potential distances after moving into the chosen direction.
+	 * The directions are mentioned in the name of each variable.*/
+	int distanceRight;
+	int distanceLeft;
+	int distanceUp;
+	int distanceDown;
 
+	/* As important as the distances of each tile, are the index of the values inside.
+	 * After evaluating which potential distance is the most suitablel, the tile which goes with it has to be swapped
+	 * with the zero tile. Thus the index of the tile is needed.*/
 	int indexRight;
 	int indexLeft;
 	int indexUp;
 	int indexDown;
 
+	// The following array saves the (max) four neighbors of the zero tile.
+	int neighbors[4];
+
+	/* To evaluate which neighbor of the zero tile would give an improvement, they have to be compared to each other.
+	 * The following variables are used to save the min-value and the index of the tile.*/
 	int min;
 	int minIndex;
 
-	int neighbors[4];
+	/* The following puzzle variable will be used at the end of the algorithm to show the final result.
+	 * To make it possible the array, which is used in the meantime, will be translated back to a puzzle.*/
+	Puzzle resultPuzzle(8, std::vector<int>(8, 0));
 
-	Puzzle tmpPuzzle(8, std::vector<int>(8, 0));
-
+	// The variable iteration counts how many movements are needed to achive the goal.
 	int iteration = 0;
+
+	// The while-loop iterates until the result of the heuristic function will be zero and the goal is reached.
 	while (sumOfDistances != 0) {
-		// resets the values for current iteration
-		diffRight = -1;
-		diffLeft = -1;
-		diffUp = -1;
-		diffDown = -1;
+
+		/* For each loop the following values will be reseted.
+		 * Their starting values are values, which cannot appear out of algorithm.
+		 * If a tile has (for example) no left tile. The values of the correspondig variable will stay -1
+		 * and it will be ignored for a movement.*/
+		distanceRight = -1;
+		distanceLeft = -1;
+		distanceUp = -1;
+		distanceDown = -1;
 
 		indexRight = -1;
 		indexLeft = -1;
 		indexUp = -1;
 		indexDown = -1;
 
+		// Where is the zero tile?
 		indexOfZero = findZeroTile(tilesInPuzzle);
 
+		/* Depending on the position of zero there are just certain moves possible.
+		 * The following lines check each possibility.*/
 		if (indexOfZero == 0) {
 			indexRight = 1;
 			indexDown = 3;
 
+			/* These if-clauses check if the zero tile has been at the position before.
+			 * If so, they will not be considered in the iteration. That means, that after the initial iteration
+			 * there is always one less possible move.*/
 			if (previousIndexOfZero != 1) {
-				diffRight = getNewDistanceToGoal(1, 0, tilesInPuzzle);
+				distanceRight = getNewDistanceToGoal(1, 0, tilesInPuzzle);
 			}
 
 			if (previousIndexOfZero != 3) {
-				diffDown = getNewDistanceToGoal(3, 0, tilesInPuzzle);
+				distanceDown = getNewDistanceToGoal(3, 0, tilesInPuzzle);
 			}
 
 		}
@@ -108,15 +137,15 @@ int Agent::manhattan_distance(Puzzle puzzle) {
 			indexDown = 4;
 
 			if (previousIndexOfZero != 0) {
-				diffLeft = getNewDistanceToGoal(0, 1, tilesInPuzzle);
+				distanceLeft = getNewDistanceToGoal(0, 1, tilesInPuzzle);
 			}
 
 			if (previousIndexOfZero != 2) {
-				diffRight = getNewDistanceToGoal(2, 1, tilesInPuzzle);
+				distanceRight = getNewDistanceToGoal(2, 1, tilesInPuzzle);
 			}
 
 			if (previousIndexOfZero != 4) {
-				diffDown = getNewDistanceToGoal(4, 1, tilesInPuzzle);
+				distanceDown = getNewDistanceToGoal(4, 1, tilesInPuzzle);
 			}
 		}
 		if (indexOfZero == 2) {
@@ -124,11 +153,11 @@ int Agent::manhattan_distance(Puzzle puzzle) {
 			indexDown = 5;
 
 			if (previousIndexOfZero != 1) {
-				diffLeft = getNewDistanceToGoal(1, 2, tilesInPuzzle);
+				distanceLeft = getNewDistanceToGoal(1, 2, tilesInPuzzle);
 			}
 
 			if (previousIndexOfZero != 5) {
-				diffDown = getNewDistanceToGoal(5, 2, tilesInPuzzle);
+				distanceDown = getNewDistanceToGoal(5, 2, tilesInPuzzle);
 			}
 		}
 
@@ -138,15 +167,15 @@ int Agent::manhattan_distance(Puzzle puzzle) {
 			indexDown = 6;
 
 			if (previousIndexOfZero != 0) {
-				diffUp = getNewDistanceToGoal(0, 3, tilesInPuzzle);
+				distanceUp = getNewDistanceToGoal(0, 3, tilesInPuzzle);
 			}
 
 			if (previousIndexOfZero != 4) {
-				diffRight = getNewDistanceToGoal(4, 3, tilesInPuzzle);
+				distanceRight = getNewDistanceToGoal(4, 3, tilesInPuzzle);
 			}
 
 			if (previousIndexOfZero != 6) {
-				diffDown = getNewDistanceToGoal(6, 3, tilesInPuzzle);
+				distanceDown = getNewDistanceToGoal(6, 3, tilesInPuzzle);
 			}
 		}
 		if (indexOfZero == 4) {
@@ -156,18 +185,18 @@ int Agent::manhattan_distance(Puzzle puzzle) {
 			indexDown = 7;
 
 			if (previousIndexOfZero != 3) {
-				diffLeft = getNewDistanceToGoal(3, 4, tilesInPuzzle);
+				distanceLeft = getNewDistanceToGoal(3, 4, tilesInPuzzle);
 			}
 			if (previousIndexOfZero != 1) {
-				diffUp = getNewDistanceToGoal(1, 4, tilesInPuzzle);
+				distanceUp = getNewDistanceToGoal(1, 4, tilesInPuzzle);
 			}
 
 			if (previousIndexOfZero != 5) {
-				diffRight = getNewDistanceToGoal(5, 4, tilesInPuzzle);
+				distanceRight = getNewDistanceToGoal(5, 4, tilesInPuzzle);
 			}
 
 			if (previousIndexOfZero != 7) {
-				diffDown = getNewDistanceToGoal(7, 4, tilesInPuzzle);
+				distanceDown = getNewDistanceToGoal(7, 4, tilesInPuzzle);
 			}
 		}
 		if (indexOfZero == 5) {
@@ -176,15 +205,15 @@ int Agent::manhattan_distance(Puzzle puzzle) {
 			indexDown = 8;
 
 			if (previousIndexOfZero != 4) {
-				diffLeft = getNewDistanceToGoal(4, 5, tilesInPuzzle);
+				distanceLeft = getNewDistanceToGoal(4, 5, tilesInPuzzle);
 			}
 
 			if (previousIndexOfZero != 2) {
-				diffUp = getNewDistanceToGoal(2, 5, tilesInPuzzle);
+				distanceUp = getNewDistanceToGoal(2, 5, tilesInPuzzle);
 			}
 
 			if (previousIndexOfZero != 8) {
-				diffDown = getNewDistanceToGoal(8, 5, tilesInPuzzle);
+				distanceDown = getNewDistanceToGoal(8, 5, tilesInPuzzle);
 			}
 		}
 
@@ -193,11 +222,11 @@ int Agent::manhattan_distance(Puzzle puzzle) {
 			indexRight = 7;
 
 			if (previousIndexOfZero != 3) {
-				diffUp = getNewDistanceToGoal(3, 6, tilesInPuzzle);
+				distanceUp = getNewDistanceToGoal(3, 6, tilesInPuzzle);
 			}
 
 			if (previousIndexOfZero != 7) {
-				diffRight = getNewDistanceToGoal(7, 6, tilesInPuzzle);
+				distanceRight = getNewDistanceToGoal(7, 6, tilesInPuzzle);
 			}
 
 		}
@@ -207,14 +236,14 @@ int Agent::manhattan_distance(Puzzle puzzle) {
 			indexRight = 8;
 
 			if (previousIndexOfZero != 6) {
-				diffLeft = getNewDistanceToGoal(6, 7, tilesInPuzzle);
+				distanceLeft = getNewDistanceToGoal(6, 7, tilesInPuzzle);
 			}
 			if (previousIndexOfZero != 4) {
-				diffUp = getNewDistanceToGoal(4, 7, tilesInPuzzle);
+				distanceUp = getNewDistanceToGoal(4, 7, tilesInPuzzle);
 			}
 
 			if (previousIndexOfZero != 8) {
-				diffRight = getNewDistanceToGoal(8, 7, tilesInPuzzle);
+				distanceRight = getNewDistanceToGoal(8, 7, tilesInPuzzle);
 			}
 
 		}
@@ -223,20 +252,22 @@ int Agent::manhattan_distance(Puzzle puzzle) {
 			indexUp = 5;
 
 			if (previousIndexOfZero != 7) {
-				diffLeft = getNewDistanceToGoal(7, 8, tilesInPuzzle);
+				distanceLeft = getNewDistanceToGoal(7, 8, tilesInPuzzle);
 			}
 
 			if (previousIndexOfZero != 5) {
-				diffUp = getNewDistanceToGoal(5, 8, tilesInPuzzle);
+				distanceUp = getNewDistanceToGoal(5, 8, tilesInPuzzle);
 			}
 
 		}
 
-		neighbors[0] = diffLeft;
-		neighbors[1] = diffUp;
-		neighbors[2] = diffRight;
-		neighbors[3] = diffDown;
+		// After getting all the potential distances of the neighbors, the values will saved in an array. ...
+		neighbors[0] = distanceLeft;
+		neighbors[1] = distanceUp;
+		neighbors[2] = distanceRight;
+		neighbors[3] = distanceDown;
 
+		// ... Then the smallest of them, which also smaller than the current distance,  will be searched.
 		min = sumOfDistances;
 		minIndex = -1;
 		for (int i = 0; i < 4; i++) {
@@ -246,6 +277,8 @@ int Agent::manhattan_distance(Puzzle puzzle) {
 			}
 		}
 
+		/* If there is no smaller potential distance than the current distance,
+		 * the smallest possible is the best candidate.*/
 		if (minIndex == -1) {
 			for(int i = 0; i < 4; i++) {
 				if (neighbors[i] != -1) {
@@ -263,6 +296,7 @@ int Agent::manhattan_distance(Puzzle puzzle) {
 			}
 		}
 
+		// The following lines are responsible for swapping the zero tile with its new position.
 		if (minIndex == 0) {
 			tilesInPuzzle[indexOfZero] = tilesInPuzzle[indexLeft];
 			tilesInPuzzle[indexLeft] = 0;
@@ -283,25 +317,33 @@ int Agent::manhattan_distance(Puzzle puzzle) {
 			tilesInPuzzle[indexDown] = 0;
 		}
 
+		// Updates the distance after the iteration. Is the goal already reached?
 		sumOfDistances = getSumOfDistances(tilesInPuzzle);
 
+		// Update for the zero index history.
 		previousIndexOfZero = indexOfZero;
 
+		// Increaments the amount of iterations.
 		iteration++;
 	}
-	cout << "Iterations " << iteration << endl;
-	cout << "Success" << endl;
 
+	// The goal is reached. Now the array, which was used for computation, will be translated back to a puzzle.
 	index = 0;
 	for (int row = 0; row < 3; row++) {
 		for (int column = 0; column < 3; column++) {
-			tmpPuzzle[row][column] = tilesInPuzzle[index++];
+			resultPuzzle[row][column] = tilesInPuzzle[index++];
 		}
 	}
 
-	print_puzzle(tmpPuzzle);
+	// Prints the final puzzle...
+	print_puzzle(resultPuzzle);
+
+	// and the amound of iterations.
+	cout << "Iterations " << iteration << endl;
 }
 
+/* This method is used to check the result of the heuristic function after a potential move.
+ * During an iteration it is executed for every possible move. */
 int Agent::getNewDistanceToGoal(int indexOfTile, int indexOfZero,
 		int tilesInPuzzle[]) {
 	int tilesInPuzzleNew[9];
@@ -315,77 +357,7 @@ int Agent::getNewDistanceToGoal(int indexOfTile, int indexOfZero,
 	return getSumOfDistances(tilesInPuzzleNew);
 }
 
-int Agent::getDistanceToGoal(int newPossiblePosition, int tile) {
-	int distance;
-	int row;
-	int column;
-
-	if (newPossiblePosition == 0) {
-		row = 0;
-		column = 0;
-	}
-	if (newPossiblePosition == 1) {
-		row = 0;
-		column = 1;
-	}
-	if (newPossiblePosition == 2) {
-		row = 0;
-		column = 2;
-	}
-	if (newPossiblePosition == 3) {
-		row = 1;
-		column = 0;
-	}
-	if (newPossiblePosition == 4) {
-		row = 1;
-		column = 1;
-	}
-	if (newPossiblePosition == 5) {
-		row = 1;
-		column = 2;
-	}
-	if (newPossiblePosition == 6) {
-		row = 2;
-		column = 0;
-	}
-	if (newPossiblePosition == 7) {
-		row = 2;
-		column = 1;
-	}
-	if (newPossiblePosition == 8) {
-		row = 2;
-		column = 2;
-	}
-
-	int current_value = tile;
-	if (current_value == 1) {
-		distance += abs(0 - row) + abs(0 - column);
-	}
-	if (current_value == 2) {
-		distance += abs(0 - row) + abs(1 - column);
-	}
-	if (current_value == 3) {
-		distance += abs(0 - row) + abs(2 - column);
-	}
-	if (current_value == 4) {
-		distance += abs(1 - row) + abs(0 - column);
-	}
-	if (current_value == 5) {
-		distance += abs(1 - row) + abs(1 - column);
-	}
-	if (current_value == 6) {
-		distance += abs(1 - row) + abs(2 - column);
-	}
-	if (current_value == 7) {
-		distance += abs(2 - row) + abs(0 - column);
-	}
-	if (current_value == 8) {
-		distance += abs(2 - row) + abs(1 - column);
-	}
-
-	return distance;
-}
-
+// This method looks for the index of the zero tile
 int Agent::findZeroTile(int tilesInPuzzle[]) {
 	for (int i = 0; i < 9; i++) {
 		if (tilesInPuzzle[i] == 0) {
@@ -394,6 +366,8 @@ int Agent::findZeroTile(int tilesInPuzzle[]) {
 	}
 }
 
+/* This method represents actually the heuristic function for the Manhattan distance appraoch.
+ * It sums up the distances of each tile to its final destination. */
 int Agent::getSumOfDistances(int tilesInPuzzle[]) {
 	int sumOfDistances = 0;
 

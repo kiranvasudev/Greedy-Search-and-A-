@@ -39,6 +39,11 @@ private:
 	int misplaced_tiles(Puzzle puzzle);
 	int manhattan_distance(Puzzle puzzle);
 
+	int getSumOfDistances(int tilesInPuzzle[]);
+	int findZeroTile(int tilesInPuzzle[]);
+	int getDistanceToGoal(int newPossiblePosition, int tile);
+	int getNewDistanceToGoal(int indexOfTile, int indexOfZero, int tilesInPuzzle[]);
+
 	void print_puzzle(Puzzle& puzzle);
 
 };

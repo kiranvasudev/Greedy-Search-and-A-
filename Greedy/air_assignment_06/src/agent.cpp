@@ -367,7 +367,7 @@ int Agent::findZeroTile(int tilesInPuzzle[]) {
 }
 
 /* This method represents actually the heuristic function for the Manhattan distance appraoch.
- * It sums up the distances of each tile to its final destination. */
+ * It sums up the distances of each tile to their final destination. */
 int Agent::getSumOfDistances(int tilesInPuzzle[]) {
 	int sumOfDistances = 0;
 

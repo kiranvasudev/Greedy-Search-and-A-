@@ -8,9 +8,12 @@
  * */
 #include "agent.hpp"
 #include <iostream>
+#include <stdio.h>
 #include <queue>
 #include <algorithm>
 #include <stack>
+
+#define INFINITY 999
 
 Agent::Agent(Puzzle puzzle, string solver, string heuristic) :
 		puzzle(puzzle), solver(solver), heuristic(heuristic) {
@@ -37,39 +40,218 @@ void Agent::run() {
 
 }
 
-int Agent::misplaced_tiles(Puzzle puzzle) {
-<<<<<<< HEAD
-//TODO
-//returns the number of misplaced tiles
-	int goal[3][3] = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 0 } };
+//counts the number of misplaced tiles
+int Agent::countMisplaced(int elementsInArray[],int size) {
+	int count = 0;
+	for(int i = 0; i< size; i++)
+		if(elementsInArray[i] != i+1)
+			count ++;
 
-	int i, j, count = 0;
-
-		for (i = 0; i < sizeof(puzzle) / sizeof(puzzle[0]); i++) {
-			for (j = 0; i < sizeof(puzzle) / sizeof(puzzle[0]); i++) {
-				if (puzzle[i][j] == goal[i][j])
-					count++;
-			}
-		}
 	return count;
 }
 
-int Agent::manhattan_distance(Puzzle puzzle) {
-//TODO
+//returns the coordinates of 0 in the puzzle
+int Agent::indexOfZero(int tiles[], int size) {
+	int position;
+	for (int i = 0; i< size; i++)
+			if (tiles[i] == 0){
+				position = i;
+				break;
+			}
+	return position;
 }
 
-void Agent::greedy_search(string heuristic) {
-//TODO
-//Note: In this assignment you must find the proper way to
-//keep track of repeated states.
-	/*if (heuristic == 1) {
-	 misplaced_tiles(puzzle);
-	 } else {
-	 manhattan_distance(puzzle);
-	 }*/
+//swaps the values in the puzzle
+void Agent::swapValues(int tiles[], int childPosition, int zeroPosition){
+	int temp;
+	temp = tiles[childPosition];
+	tiles[childPosition] = tiles[zeroPosition];
+	tiles[zeroPosition] = temp;
+}
 
-=======
-	//TODO
+int checkMin(int a, int b, int c, int d){
+	if(a<b && a<c && a<d)
+		return a;
+	else if(b<c && b<d && b<a)
+		return b;
+	else if(c<d && c<a && c<b)
+		return c;
+	else if(d<a && d<b && d<c)
+		return d;
+}
+
+int Agent::misplaced_tiles(Puzzle puzzle) {
+//TODO
+//returns the number of misplaced tiles
+	cout << "0,0 - " << puzzle[0][0]<< endl;
+	cout << "0,1 - " << puzzle[0][1]<< endl;
+
+	//Holds the current elements in an array and is used for swapping
+	int checkList[9], tempCheckList[9];
+
+	//the goals from these positions
+	int goalUpper, goalLower, goalRight, goalLeft;
+
+
+	//stores the last visited index
+	int lastVisited;
+	//gets the position of element 0
+	int posOfZero, iterationNumber = 0;
+
+	//Result will be printed to this puzzle
+	Puzzle result(8, std::vector<int>(8, 0)), temp(8, std::vector<int>(8,0));
+
+	//populate the array with all elements of the puzzle
+	int index = 0;
+	for (int i = 0; i<3; i++)
+		for(int j = 0; j<3; j++)
+			checkList[index++] = puzzle[i][j];
+
+	//gets initial number of misplaced tiles
+	int misplacedNumber = countMisplaced(checkList, index);
+
+
+	//for (int i=0; i<index; i++)
+		//cout << checkList[i];
+	//cout << endl;
+	//run loop until all the elements have reached their respective positions
+	while (misplacedNumber != 0) {
+
+		for (int i=0; i<index; i++)
+					cout << checkList[i];
+				cout << endl;
+
+
+		//gets the position of 0
+		int posOfZero = indexOfZero(checkList,index);
+		cout << "pos of 0 " << posOfZero << endl;
+
+		//get all the children from the index
+		//since it is a 3x3 array, the positions will be calculated as follows
+		int upperChildPos = posOfZero - 3;
+		int lowerChildPos = posOfZero + 3;
+		int rightChildPos = posOfZero + 1;
+		int leftChildPos = posOfZero - 1;
+
+		//checking the number of Misplaced Tiles from each child
+
+		//what im doing in each loop
+		/*
+		 * the array is copied to a new array
+		 * the child values are swapped with the temp array and the misplaced count is calculated and stored
+		 * i am assigning a value infinity to show that the value is very very big
+		 * */
+		if (upperChildPos >= 0) {
+			cout << "up: ";
+			for (int r = 0; r < index; r++) {
+				tempCheckList[r] = checkList[r];
+				cout << tempCheckList[r];
+			}
+			cout << endl;
+			swapValues(tempCheckList, upperChildPos, posOfZero);
+			goalUpper = countMisplaced(tempCheckList, index);
+			//printing to check my new state after substitution
+			for (int r = 0; r < index; r++) {
+				cout << tempCheckList[r];
+			}
+			cout << endl;
+		} else
+			goalUpper = INFINITY;
+
+		if (lowerChildPos >= 0) {
+			cout << "down: ";
+			for (int r = 0; r < index; r++) {
+				tempCheckList[r] = checkList[r];
+				cout << tempCheckList[r];
+			}
+			cout << endl;
+			swapValues(tempCheckList, lowerChildPos, posOfZero);
+			goalLower = countMisplaced(tempCheckList, index);
+			for (int r = 0; r < index; r++) {
+				cout << tempCheckList[r];
+			}
+			cout << endl;
+		} else
+			goalLower = INFINITY;
+
+		if (rightChildPos >= 0) {
+			cout << "right: ";
+			for (int r = 0; r < index; r++) {
+				tempCheckList[r] = checkList[r];
+				cout << tempCheckList[r];
+			}
+			cout << endl;
+			swapValues(tempCheckList, rightChildPos, posOfZero);
+			goalRight = countMisplaced(tempCheckList, index);
+			for (int r = 0; r < index; r++) {
+				cout << tempCheckList[r];
+			}
+			cout << endl;
+		} else
+			goalRight = INFINITY;
+
+		if (leftChildPos >= 0) {
+			cout << "right: ";
+			for (int r = 0; r < index; r++) {
+				tempCheckList[r] = checkList[r];
+				cout << tempCheckList[r];
+			}
+			cout << endl;
+			swapValues(tempCheckList, leftChildPos, posOfZero);
+			goalLeft = countMisplaced(tempCheckList, index);
+			for (int r = 0; r < index; r++) {
+				cout << tempCheckList[r];
+			}
+			cout << endl;
+		} else
+			goalLeft = INFINITY;
+
+		//swapping the value with the minimum number of misplaced tiles and assigning the lowest misplaced number for the next iteration also checking visited
+		if ((checkMin(goalUpper, goalLower, goalRight, goalLeft) == goalUpper)
+				&& (lastVisited != posOfZero)) {
+			swapValues(checkList, upperChildPos, posOfZero);
+			misplacedNumber = goalUpper;
+		}
+
+		if ((checkMin(goalUpper, goalLower, goalRight, goalLeft) == goalLower)
+				&& (lastVisited != posOfZero)) {
+			swapValues(checkList, lowerChildPos, posOfZero);
+			misplacedNumber = goalLower;
+		}
+
+		if ((checkMin(goalUpper, goalLower, goalRight, goalLeft) == goalRight)
+				&& (lastVisited != posOfZero)) {
+			swapValues(checkList, rightChildPos, posOfZero);
+			misplacedNumber = goalRight;
+		}
+
+		if ((checkMin(goalUpper, goalLower, goalRight, goalLeft) == goalLeft)
+				&& (lastVisited != posOfZero)) {
+			swapValues(checkList, leftChildPos, posOfZero);
+			misplacedNumber = goalLeft;
+		}
+
+		//stores the last visited index of 0
+		lastVisited = posOfZero;
+
+		//increase the iteration count
+		iterationNumber++;
+		cout << "--" <<endl;
+	}
+
+	// The goal is reached. Now the array, which was used for computation, will be translated back to a puzzle.
+	index = 0;
+	/*for (int row = 0; row < 3; row++) {
+		for (int column = 0; column < 3; column++) {
+			result[row][column] = checkList[index++];
+		}
+	}*/
+
+	// Prints the final puzzle...
+	//print_puzzle(result);
+
+	// and the amount of iterations.
+	cout << "Iterations " << iterationNumber << endl;
 }
 
 int Agent::manhattan_distance(Puzzle puzzle) {
@@ -370,7 +552,7 @@ int Agent::manhattan_distance(Puzzle puzzle) {
 	// Prints the final puzzle...
 	print_puzzle(resultPuzzle);
 
-	// and the amound of iterations.
+	// and the amount of iterations.
 	cout << "Iterations " << iteration << endl;
 }
 
@@ -482,7 +664,7 @@ void Agent::greedy_search(string heuristic) {
 	} else {
 		manhattan_distance(puzzle);
 	}
->>>>>>> 6d5901b7df3359309f7a29160e3025157c10e35f
+//>>>>>>> 6d5901b7df3359309f7a29160e3025157c10e35f
 }
 
 void Agent::print_puzzle(Puzzle& puzzle) {

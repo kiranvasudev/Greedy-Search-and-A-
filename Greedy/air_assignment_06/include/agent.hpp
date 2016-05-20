@@ -1,5 +1,5 @@
 /*
- * Daniel Vazquez
+ * Daniel Vazquez, Kiran Vasudev, Patrick Nagel
  * Aritificial Intelligence for Robotics
  * SS 2016
  * Assignment 6
@@ -39,6 +39,11 @@ private:
 
 	int misplaced_tiles(Puzzle puzzle);
 	int manhattan_distance(Puzzle puzzle);
+
+	// The following three methods are needed for the Manhattan distance part.
+	int getSumOfDistances(int tilesInPuzzle[]);
+	int findZeroTile(int tilesInPuzzle[]);
+	int getNewDistanceToGoal(int indexOfTile, int indexOfZero, int tilesInPuzzle[]);
 
 	void print_puzzle(Puzzle& puzzle);
 

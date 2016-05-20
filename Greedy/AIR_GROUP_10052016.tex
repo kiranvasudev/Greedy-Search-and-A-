@@ -63,7 +63,7 @@ The expression informed search is the generic term for search algorithms which u
 Informed searches use their knowledge to build an evaluation function. The function evaluates if it is worth to expand the node based on the costs, which have to be paid to reach the node and at the end the goal. The approach of choosing the most suitable way first is called best-first search. The evaluation function of lots of algorithms, which fit into the definition of a best-first search, contain a part which is called heuristic function. This function itself gives the estimated cost of the cheapest path from a node n to the goal node.
 
 \subsection{Greedy Search}
-% Kiran
+A Greedy Search algorithm is a search algorithm that uses a heuristic that helps the algorithm make an optimal choice at every iteration/stage of the algorithm. This type of algorithm does not produce an optimal solution for all problems, but they may provide optimal solutions over a reasonable amount of time. A greedy algorithm makes its decision based on the most optimal choice at that very instance but does not look ahead to see if we reach the desired goal in its best path. 
 
 \subsection{A*}
 The A* search is the most famous search using the best-first approach. It was found 1968 by Peter Hart, Nils J. Nilsson and Bertram Raphael and contains as many other \textbf{best-first} search a heuristic function ($h(n)$). Together with a function, which gives the costs to reach a node ($g(n)$), it builds the evaluation function of the A* search: $f(n) = g(n) + h(n)$. In words the evaluation function $f(n)$ means the estimated cost of the chepeast solution through n.\\
@@ -71,7 +71,7 @@ The A* search is the most famous search using the best-first approach. It was fo
 The algorithm finds always the best solution if such a  solution is given at all. Thus it is \textbf{optimal}. Furthermore the search is \textbf{complete} unless there are infinity nodes with $f(n) <= f(G)$. The complexity of the search is in the best case $O(d)$ and in worst case it is $O$ of the entire state space. The A* search can be compared to the uniformed-cost-search but instead of having only the g-function, it is g + h.
 
 \subsection{Iterative A*}
-% Kiran
+Iterative A* algorithm is a search algorithm that helps to find the shortest distance between a one node to another in a state space. This algorithm uses Depth First Search and is a variant of the Iterative Depth First Search Algorithm, the only difference being that the iterative A* algorithm uses a heuristic function to evaluate the cost to get to the goal using the normal A* algorithm. As it uses the concepts of DFS, the memory requirements for this are very low, and also the algorithm does not traverse the entire depth of the tree, rather it traverses the depth where the cost to the goal is the cheapest.
 
 \newpage
 \section{What is a heuristic function?}
@@ -83,5 +83,5 @@ A heuristic function is one that estimates the cost of the path from a node to t
 
 \newpage
 \section{Comment if the heuristics are consistent or inconsistent. (Task 3 (c))}
-% Not decided yet.
+
 \end{document}

@@ -44,7 +44,7 @@ private:
 	int countMisplaced(int elementsInArray[], int size); //returns the number of misplaced tiles
 	int indexOfZero(int tiles[], int size);
 	void swapValues(int tiles[], int childPosition, int zeroPosition);
-
+	int tempSwapCount(int arr[], int size, int move, int zeroPos);
 
 	// The following three methods are needed for the Manhattan distance part.
 	int getSumOfDistances(int tilesInPuzzle[]);

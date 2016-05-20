@@ -8,9 +8,12 @@
  * */
 #include "agent.hpp"
 #include <iostream>
+#include <stdio.h>
 #include <queue>
 #include <algorithm>
 #include <stack>
+
+#define INFINITY 999
 
 Agent::Agent(Puzzle puzzle, string solver, string heuristic) :
 		puzzle(puzzle), solver(solver), heuristic(heuristic) {
@@ -37,40 +40,359 @@ void Agent::run() {
 
 }
 
-int Agent::misplaced_tiles(Puzzle puzzle) {
-<<<<<<< HEAD
-//TODO
-//returns the number of misplaced tiles
-	int goal[3][3] = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 0 } };
+//counts the number of misplaced tiles
+int Agent::countMisplaced(int elementsInArray[],int size) {
+	int count = 0;
+	for(int i = 0; i< size; i++)
+		if(elementsInArray[i] != i+1)
+			count ++;
 
-	int i, j, count = 0;
-
-		for (i = 0; i < sizeof(puzzle) / sizeof(puzzle[0]); i++) {
-			for (j = 0; i < sizeof(puzzle) / sizeof(puzzle[0]); i++) {
-				if (puzzle[i][j] == goal[i][j])
-					count++;
-			}
-		}
 	return count;
 }
 
-int Agent::manhattan_distance(Puzzle puzzle) {
-//TODO
+//returns the coordinates of 0 in the puzzle
+int Agent::indexOfZero(int tiles[], int size) {
+	int position;
+	for (int i = 0; i< size; i++)
+			if (tiles[i] == 0){
+				position = i;
+				break;
+			}
+	return position;
 }
 
-void Agent::greedy_search(string heuristic) {
-//TODO
-//Note: In this assignment you must find the proper way to
-//keep track of repeated states.
-	/*if (heuristic == 1) {
-	 misplaced_tiles(puzzle);
-	 } else {
-	 manhattan_distance(puzzle);
-	 }*/
-
-=======
-	//TODO
+//swaps the values in the puzzle
+void Agent::swapValues(int tiles[], int childPosition, int zeroPosition){
+	int temp;
+	temp = tiles[childPosition];
+	tiles[childPosition] = tiles[zeroPosition];
+	tiles[zeroPosition] = temp;
 }
+
+int checkMin(int a, int b, int c, int d){
+	if(a<b && a<c && a<d)
+		return a;
+	if(b<c && b<d && b<a)
+		return b;
+	if(c<d && c<a && c<b)
+		return c;
+	if(d<a && d<b && d<c)
+		return d;
+}
+
+int *copyValues(int a[], int b[],int size){
+	for(int i = 0; i< size; i++)
+		b[i] = a[i];
+	return b;
+}
+
+int Agent::tempSwapCount(int arr[], int size, int move, int zeroPos){
+	int tempElements[9], moveValue;
+
+	//copying the elements to another array
+	//tempElements = copyValues(arr, tempElements, size);
+	for(int i = 0; i< size; i++)
+			tempElements[i] = arr[i];
+	//swapping the values for the move
+	swapValues(tempElements, move, zeroPos);
+	//calculating the number of misplaced tiles after swapping
+	moveValue = Agent::countMisplaced(tempElements, size);
+
+	return moveValue;
+}
+
+
+int Agent::misplaced_tiles(Puzzle puzzle) {
+//TODO
+//returns the number of misplaced tiles
+	cout << "0,0 - " << puzzle[0][0] << endl;
+	cout << "0,1 - " << puzzle[0][1] << endl;
+
+	//Holds the current elements in an array and is used for swapping
+	int elements[9];
+
+	//the goals from these positions
+	int upMove, downMove, leftMove, rightMove;
+
+	//values of the moves
+	int rightMoveValue, upMoveValue, leftMoveValue, downMoveValue;
+
+	//stores the last visited index
+	int lastVisited,misplacedNumber;
+	//gets the position of element 0
+	int posOfZero, iterationNumber = 0;
+
+	//Result will be printed to this puzzle
+	Puzzle result(8, std::vector<int>(8, 0)), temp(8, std::vector<int>(8, 0));
+
+	//populate the array with all elements of the puzzle
+	int index = 0;
+	for (int i = 0; i < 3; i++)
+		for (int j = 0; j < 3; j++)
+			elements[index++] = puzzle[i][j];
+
+	//gets initial number of misplaced tiles
+	misplacedNumber = countMisplaced(elements, index);
+
+	//run loop until all the elements have reached their respective positions
+
+	while (iterationNumber < 1000) {
+
+		int posOfZero = indexOfZero(elements, index);
+
+		switch (posOfZero) {
+		case 0:
+			downMove = 3;
+			rightMove= 1;
+
+			if (lastVisited != downMove) {
+				downMoveValue = tempSwapCount(elements, index, downMove, posOfZero);
+			}
+
+			if (lastVisited != rightMove) {
+				rightMoveValue = tempSwapCount(elements, index, rightMove, posOfZero);
+			}
+
+			if(rightMove <= downMove)
+				swapValues(elements, rightMove, posOfZero);
+			else if(downMove < rightMove)
+				swapValues(elements, downMove, posOfZero);
+
+			misplacedNumber = countMisplaced(elements, index);
+
+			break;
+		case 1:
+			leftMove = 0;
+			downMove = 4;
+			rightMove = 2;
+
+			if (lastVisited != downMove)
+				downMoveValue = tempSwapCount(elements, index, downMove, posOfZero);
+
+			if (lastVisited != rightMove)
+				rightMoveValue = tempSwapCount(elements, index, rightMove, posOfZero);
+
+			if (lastVisited != leftMove)
+				leftMoveValue = tempSwapCount(elements, index, leftMove, posOfZero);
+
+			if ((rightMoveValue <= downMoveValue)&&(rightMoveValue <= leftMoveValue))
+				swapValues(elements, rightMove, posOfZero);
+
+			else if ((downMoveValue <= rightMoveValue)&&(downMoveValue <= leftMoveValue))
+				swapValues(elements, downMove, posOfZero);
+
+			else if((leftMoveValue <= downMoveValue)&&(leftMoveValue <= rightMoveValue))
+				swapValues(elements, leftMove, posOfZero);
+
+			misplacedNumber = countMisplaced(elements, index);
+
+			break;
+		case 2:
+			leftMove = 1;
+			rightMove = 5;
+
+			if (lastVisited != rightMove) {
+				rightMoveValue = tempSwapCount(elements, index, rightMove, posOfZero);
+			}
+
+			if (lastVisited != leftMove) {
+				leftMoveValue = tempSwapCount(elements, index, leftMove, posOfZero);
+			}
+
+			if (leftMove <= rightMove)
+				swapValues(elements, leftMove, posOfZero);
+
+			else if (rightMove < leftMove)
+				swapValues(elements, rightMove, posOfZero);
+
+			misplacedNumber = countMisplaced(elements, index);
+
+			break;
+		case 3:
+			upMove =0;
+			rightMove = 4;
+			downMove = 6;
+
+			if (lastVisited != upMove)
+				upMoveValue = tempSwapCount(elements, index, upMove, posOfZero);
+
+			if (lastVisited != rightMove)
+				rightMoveValue = tempSwapCount(elements, index, rightMove, posOfZero);
+
+			if (lastVisited != downMove)
+				downMoveValue = tempSwapCount(elements, index, downMove, posOfZero);
+
+			if ((rightMoveValue <= downMoveValue) && (rightMoveValue <= upMoveValue))
+				swapValues(elements, rightMove, posOfZero);
+
+			else if ((upMoveValue <= rightMoveValue) && (upMoveValue <= downMoveValue))
+				swapValues(elements, upMove, posOfZero);
+
+			else if ((downMoveValue <= rightMoveValue) && (downMoveValue <= upMoveValue))
+				swapValues(elements, downMove, posOfZero);
+
+			misplacedNumber = countMisplaced(elements, index);
+
+			break;
+		case 4:
+			upMove =1;
+			rightMove = 5;
+			leftMove = 3;
+			downMove= 7;
+
+			if (lastVisited != upMove)
+				upMoveValue = tempSwapCount(elements, index, upMove, posOfZero);
+
+			if (lastVisited != rightMove)
+				rightMoveValue = tempSwapCount(elements, index, rightMove,posOfZero);
+
+			if (lastVisited != downMove)
+				downMoveValue = tempSwapCount(elements, index, downMove,posOfZero);
+
+			if (lastVisited != leftMove)
+				leftMoveValue = tempSwapCount(elements, index, leftMove,posOfZero);
+
+			if ((rightMoveValue <= downMoveValue)&& (rightMoveValue < upMoveValue)&& (rightMoveValue < leftMoveValue))
+				swapValues(elements, rightMove, posOfZero);
+
+			else if ((upMoveValue < rightMoveValue)&& (upMoveValue < downMoveValue)&& (upMoveValue < leftMoveValue))
+				swapValues(elements, upMove, posOfZero);
+
+			else if ((downMoveValue < rightMoveValue)&& (downMoveValue < upMoveValue)&& (downMoveValue < leftMoveValue))
+				swapValues(elements, downMove, posOfZero);
+
+			else if((leftMoveValue < downMoveValue)&&(leftMoveValue < rightMoveValue)&&(leftMoveValue < upMoveValue))
+							swapValues(elements, leftMove, posOfZero);
+
+			misplacedNumber = countMisplaced(elements, index);
+
+			break;
+
+		case 5:
+			upMove = 2;
+			downMove = 8;
+			leftMove = 4;
+
+			if (lastVisited != upMove)
+				upMoveValue = tempSwapCount(elements, index, upMove, posOfZero);
+
+			if (lastVisited != leftMove)
+				leftMoveValue = tempSwapCount(elements, index, leftMove,posOfZero);
+
+			if (lastVisited != downMove)
+				downMoveValue = tempSwapCount(elements, index, downMove,posOfZero);
+
+			if ((leftMoveValue <= downMoveValue)&& (leftMoveValue <= upMoveValue))
+				swapValues(elements, leftMove, posOfZero);
+
+			else if ((upMoveValue <= leftMoveValue)&& (upMoveValue <= downMoveValue))
+				swapValues(elements, upMove, posOfZero);
+
+			else if ((downMoveValue <= leftMoveValue)&& (downMoveValue <= upMoveValue))
+				swapValues(elements, downMove, posOfZero);
+
+			misplacedNumber = countMisplaced(elements, index);
+
+			break;
+
+		case 6:
+			upMove = 3;
+			rightMove = 7;
+
+			if (lastVisited != rightMove) {
+				rightMoveValue = tempSwapCount(elements, index, rightMove,posOfZero);
+			}
+
+			if (lastVisited != upMove) {
+				upMoveValue = tempSwapCount(elements, index, upMove,posOfZero);
+			}
+
+			if (upMove <= rightMove)
+				swapValues(elements, upMove, posOfZero);
+
+			else if (rightMove < upMove)
+				swapValues(elements, rightMove, posOfZero);
+
+			misplacedNumber = countMisplaced(elements, index);
+
+			break;
+
+		case 7:
+			upMove =4;
+			leftMove = 6;
+			rightMove = 8;
+
+			if (lastVisited != upMove)
+				upMoveValue = tempSwapCount(elements, index, upMove, posOfZero);
+
+			if (lastVisited != leftMove)
+				leftMoveValue = tempSwapCount(elements, index, leftMove,posOfZero);
+
+			if (lastVisited != rightMove)
+				rightMoveValue = tempSwapCount(elements, index, rightMove,posOfZero);
+
+			if ((leftMoveValue <= rightMoveValue)&& (leftMoveValue <= upMoveValue))
+				swapValues(elements, leftMove, posOfZero);
+
+			else if ((upMoveValue <= rightMoveValue)&& (upMoveValue <= leftMoveValue))
+				swapValues(elements, upMove, posOfZero);
+
+			else if ((rightMoveValue <= leftMoveValue)&& (rightMoveValue <= upMoveValue))
+				swapValues(elements, rightMove, posOfZero);
+
+			misplacedNumber = countMisplaced(elements, index);
+
+			break;
+
+		case 8:
+			upMove = 5;
+			leftMove = 7;
+
+			if (lastVisited != leftMove) {
+				leftMoveValue = tempSwapCount(elements, index, leftMove, posOfZero);
+			}
+
+			if (lastVisited != upMove) {
+				upMoveValue = tempSwapCount(elements, index, upMove, posOfZero);
+			}
+
+			if (upMove <= leftMove)
+				swapValues(elements, upMove, posOfZero);
+
+			else if (leftMove < upMove)
+				swapValues(elements, leftMove, posOfZero);
+
+			misplacedNumber = countMisplaced(elements, index);
+
+			break;
+		default:
+			break;
+		}
+
+		cout << "Result: " <<endl;
+		for(int i=0;i<index;i++)
+			cout<<elements[i];
+
+		cout << "Iterations " << iterationNumber++ << endl;
+
+		cout << "--------------------------------------------------------"<<endl;
+	}
+
+
+		// The goal is reached. Now the array, which was used for computation, will be translated back to a puzzle.
+		index = 0;
+		/*for (int row = 0; row < 3; row++) {
+		 for (int column = 0; column < 3; column++) {
+		 result[row][column] = checkList[index++];
+		 }
+		 }*/
+
+		// Prints the final puzzle...
+		//print_puzzle(result);
+		// and the amount of iterations.
+
+	}
+
 
 int Agent::manhattan_distance(Puzzle puzzle) {
 
@@ -370,7 +692,7 @@ int Agent::manhattan_distance(Puzzle puzzle) {
 	// Prints the final puzzle...
 	print_puzzle(resultPuzzle);
 
-	// and the amound of iterations.
+	// and the amount of iterations.
 	cout << "Iterations " << iteration << endl;
 }
 
@@ -482,7 +804,7 @@ void Agent::greedy_search(string heuristic) {
 	} else {
 		manhattan_distance(puzzle);
 	}
->>>>>>> 6d5901b7df3359309f7a29160e3025157c10e35f
+//>>>>>>> 6d5901b7df3359309f7a29160e3025157c10e35f
 }
 
 void Agent::print_puzzle(Puzzle& puzzle) {

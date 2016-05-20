@@ -79,9 +79,13 @@ A heuristic function is one that estimates the cost of the path from a node to t
 
 \newpage
 \section{Comparison of the two heuristics. (Task 3 (b))}
-% Not decided yet.
+The misplaced tiles method takes into account only the fact that the tile is misplaced and not the distance of this misplaced tile to the desired goal. Therefore, a tile closer to the goal is treated very similarly to a tile that is very far from the goal.
+
+On the other hand, the Manhattan Distance method takes into consideration how far a misplaced tile is from its desired goal. This may lead to better outcomes.
 
 \newpage
 \section{Comment if the heuristics are consistent or inconsistent. (Task 3 (c))}
+Heuristics are inconsistent if the heuristic chosen overshoots the estimated cost to the desired goal.
 
+Similarly, heuristics are consistent if the heuristic chosen is at most the estimated cost between a node and the goal state.
 \end{document}

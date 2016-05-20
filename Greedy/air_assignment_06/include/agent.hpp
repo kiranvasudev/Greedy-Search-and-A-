@@ -36,6 +36,7 @@ private:
 	string heuristic;
 
 	void greedy_search(string heuristic);
+
 	int misplaced_tiles(Puzzle puzzle);
 	int manhattan_distance(Puzzle puzzle);
 
